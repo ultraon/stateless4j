@@ -89,7 +89,7 @@ public class StateMachine<S, T> {
     public StateConfiguration<S, T> configure(S state) {
         return config.configure(state);
     }
-    
+
     public StateMachineConfig<S, T> configuration() {
         return config;
     }
@@ -108,12 +108,12 @@ public class StateMachine<S, T> {
     }
 
     /**
-     * The currently-permissible trigger values
+     * The currently-permissible trigger values.
      *
      * @return The currently-permissible trigger values
      */
     public List<T> getPermittedTriggers() {
-        return getCurrentRepresentation().getPermittedTriggers();
+        return getCurrentRepresentation().getPermittedTriggers(null);
     }
 
     StateRepresentation<S, T> getCurrentRepresentation() {
@@ -191,7 +191,7 @@ public class StateMachine<S, T> {
             configuration.validateParameters(args);
         }
 
-        TriggerBehaviour<S, T> triggerBehaviour = getCurrentRepresentation().tryFindHandler(trigger);
+        TriggerBehaviour<S, T> triggerBehaviour = getCurrentRepresentation().tryFindHandler(trigger, args);
         if (triggerBehaviour == null) {
             unhandledTriggerAction.doIt(getCurrentRepresentation().getUnderlyingState(), trigger);
             return;
@@ -231,13 +231,15 @@ public class StateMachine<S, T> {
     }
 
     /**
-     * Returns true if {@code trigger} can be fired  in the current state
+     * Returns true if {@code trigger} can be fired in the current state. Evaluates the provided trigger parameters
+     * for transitions with parametrized guard function specified.
      *
      * @param trigger Trigger to test
+     * @param args    Trigger parameters to evaluate guards with
      * @return True if the trigger can be fired, false otherwise
      */
-    public boolean canFire(T trigger) {
-        return getCurrentRepresentation().canHandle(trigger);
+    public boolean canFire(T trigger, Object[] args) {
+        return getCurrentRepresentation().canHandle(trigger, args);
     }
 
     /**

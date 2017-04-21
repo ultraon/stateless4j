@@ -1,14 +1,14 @@
 package com.github.oxo42.stateless4j.triggers;
 
-import com.github.oxo42.stateless4j.delegates.FuncBoolean;
 import com.github.oxo42.stateless4j.OutVar;
+import com.github.oxo42.stateless4j.delegates.Func2;
 
 public abstract class TriggerBehaviour<S, T> {
 
     private final T trigger;
-    private final FuncBoolean guard;
+    private final Func2<Object[], Boolean> guard;
 
-    protected TriggerBehaviour(T trigger, FuncBoolean guard) {
+    protected TriggerBehaviour(T trigger, Func2<Object[], Boolean> guard) {
         this.trigger = trigger;
         this.guard = guard;
     }
@@ -17,8 +17,8 @@ public abstract class TriggerBehaviour<S, T> {
         return trigger;
     }
 
-    public boolean isGuardConditionMet() {
-        return guard.call();
+    public boolean isGuardConditionMet(Object[] args) {
+        return guard.call(args);
     }
 
     public abstract boolean resultsInTransitionFrom(S source, Object[] args, OutVar<S> dest);

@@ -4,12 +4,8 @@ import com.github.oxo42.stateless4j.delegates.Action1;
 import com.github.oxo42.stateless4j.delegates.Action2;
 import com.github.oxo42.stateless4j.transitions.Transition;
 import com.github.oxo42.stateless4j.triggers.TriggerBehaviour;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.util.*;
 
 public class StateRepresentation<S, T> {
 
@@ -29,19 +25,19 @@ public class StateRepresentation<S, T> {
         return triggerBehaviours;
     }
 
-    public Boolean canHandle(T trigger) {
-        return tryFindHandler(trigger) != null;
+    public Boolean canHandle(T trigger, Object[] args) {
+        return tryFindHandler(trigger, args) != null;
     }
 
-    public TriggerBehaviour<S, T> tryFindHandler(T trigger) {
-        TriggerBehaviour<S, T> result = tryFindLocalHandler(trigger);
+    public TriggerBehaviour<S, T> tryFindHandler(T trigger, Object[] args) {
+        TriggerBehaviour<S, T> result = tryFindLocalHandler(trigger, args);
         if (result == null && superstate != null) {
-            result = superstate.tryFindHandler(trigger);
+            result = superstate.tryFindHandler(trigger, args);
         }
         return result;
     }
 
-    TriggerBehaviour<S, T> tryFindLocalHandler(T trigger/*, out TriggerBehaviour handler*/) {
+    TriggerBehaviour<S, T> tryFindLocalHandler(T trigger, Object[] args/*, out TriggerBehaviour handler*/) {
         List<TriggerBehaviour<S, T>> possible = triggerBehaviours.get(trigger);
         if (possible == null) {
             return null;
@@ -49,7 +45,7 @@ public class StateRepresentation<S, T> {
 
         List<TriggerBehaviour<S, T>> actual = new ArrayList<>();
         for (TriggerBehaviour<S, T> triggerBehaviour : possible) {
-            if (triggerBehaviour.isGuardConditionMet()) {
+            if (triggerBehaviour.isGuardConditionMet(args)) {
                 actual.add(triggerBehaviour);
             }
         }
@@ -173,12 +169,12 @@ public class StateRepresentation<S, T> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<T> getPermittedTriggers() {
+    public List<T> getPermittedTriggers(Object[] args) {
         Set<T> result = new HashSet<>();
 
         for (T t : triggerBehaviours.keySet()) {
             for (TriggerBehaviour<S, T> v : triggerBehaviours.get(t)) {
-                if (v.isGuardConditionMet()) {
+                if (args == null || v.isGuardConditionMet(args)) {
                     result.add(t);
                     break;
                 }
@@ -186,7 +182,7 @@ public class StateRepresentation<S, T> {
         }
 
         if (getSuperstate() != null) {
-            result.addAll(getSuperstate().getPermittedTriggers());
+            result.addAll(getSuperstate().getPermittedTriggers(args));
         }
 
         return new ArrayList<>(result);
