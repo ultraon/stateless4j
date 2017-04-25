@@ -1,21 +1,16 @@
 package com.github.oxo42.stateless4j;
 
-import org.junit.Assert;
+import com.github.oxo42.stateless4j.transitions.TransitioningTriggerBehaviour;
 import org.junit.Test;
 
-import com.github.oxo42.stateless4j.transitions.TransitioningTriggerBehaviour;
-
-import static com.github.oxo42.stateless4j.IgnoredTriggerBehaviourTests.toUntypedGuard;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class TriggerBehaviourTests {
 
     @Test
     public void ExposesCorrectUnderlyingTrigger() {
         TransitioningTriggerBehaviour<State, Trigger> transtioning = new TransitioningTriggerBehaviour<>(
-                Trigger.X, State.C, toUntypedGuard(IgnoredTriggerBehaviourTests.returnTrue));
+                Trigger.X, State.C, IgnoredTriggerBehaviourTests.RETURN_TRUE);
 
         assertEquals(Trigger.X, transtioning.getTrigger());
     }
@@ -23,16 +18,16 @@ public class TriggerBehaviourTests {
     @Test
     public void WhenGuardConditionFalse_IsGuardConditionMetIsFalse() {
         TransitioningTriggerBehaviour<State, Trigger> transtioning = new TransitioningTriggerBehaviour<>(
-                Trigger.X, State.C, toUntypedGuard(IgnoredTriggerBehaviourTests.returnFalse));
+                Trigger.X, State.C, IgnoredTriggerBehaviourTests.RETURN_FALSE);
 
-        assertFalse(transtioning.isGuardConditionMet(null));
+        assertFalse(transtioning.isGuardConditionMet());
     }
 
     @Test
     public void WhenGuardConditionTrue_IsGuardConditionMetIsTrue() {
         TransitioningTriggerBehaviour<State, Trigger> transtioning = new TransitioningTriggerBehaviour<>(
-                Trigger.X, State.C, toUntypedGuard(IgnoredTriggerBehaviourTests.returnTrue));
+                Trigger.X, State.C, IgnoredTriggerBehaviourTests.RETURN_TRUE);
 
-        assertTrue(transtioning.isGuardConditionMet(null));
+        assertTrue(transtioning.isGuardConditionMet());
     }
 }

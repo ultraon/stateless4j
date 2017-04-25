@@ -67,7 +67,7 @@ public class StateMachine<S, T> {
             }
         };
         if (config.isEntryActionOfInitialStateEnabled()) {
-            Transition<S,T> initialTransition = new Transition(initialState, initialState, null);
+            Transition<S,T> initialTransition = new Transition<>(initialState, initialState, null);
             getCurrentRepresentation().enter(initialTransition);
         }
     }
@@ -113,7 +113,7 @@ public class StateMachine<S, T> {
      * @return The currently-permissible trigger values
      */
     public List<T> getPermittedTriggers() {
-        return getCurrentRepresentation().getPermittedTriggers(null);
+        return getCurrentRepresentation().getPermittedTriggers();
     }
 
     StateRepresentation<S, T> getCurrentRepresentation() {
@@ -238,7 +238,7 @@ public class StateMachine<S, T> {
      * @param args    Trigger parameters to evaluate guards with
      * @return True if the trigger can be fired, false otherwise
      */
-    public boolean canFire(T trigger, Object[] args) {
+    public boolean canFire(T trigger, Object... args) {
         return getCurrentRepresentation().canHandle(trigger, args);
     }
 

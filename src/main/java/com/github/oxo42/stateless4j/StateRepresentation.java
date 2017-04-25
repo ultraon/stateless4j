@@ -25,11 +25,11 @@ public class StateRepresentation<S, T> {
         return triggerBehaviours;
     }
 
-    public Boolean canHandle(T trigger, Object[] args) {
+    public Boolean canHandle(T trigger, Object... args) {
         return tryFindHandler(trigger, args) != null;
     }
 
-    public TriggerBehaviour<S, T> tryFindHandler(T trigger, Object[] args) {
+    public TriggerBehaviour<S, T> tryFindHandler(T trigger, Object... args) {
         TriggerBehaviour<S, T> result = tryFindLocalHandler(trigger, args);
         if (result == null && superstate != null) {
             result = superstate.tryFindHandler(trigger, args);
@@ -37,7 +37,7 @@ public class StateRepresentation<S, T> {
         return result;
     }
 
-    TriggerBehaviour<S, T> tryFindLocalHandler(T trigger, Object[] args/*, out TriggerBehaviour handler*/) {
+    TriggerBehaviour<S, T> tryFindLocalHandler(T trigger, Object... args/*, out TriggerBehaviour handler*/) {
         List<TriggerBehaviour<S, T>> possible = triggerBehaviours.get(trigger);
         if (possible == null) {
             return null;
@@ -169,12 +169,12 @@ public class StateRepresentation<S, T> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<T> getPermittedTriggers(Object[] args) {
+    public List<T> getPermittedTriggers(Object... args) {
         Set<T> result = new HashSet<>();
 
         for (T t : triggerBehaviours.keySet()) {
             for (TriggerBehaviour<S, T> v : triggerBehaviours.get(t)) {
-                if (args == null || v.isGuardConditionMet(args)) {
+                if (v.isGuardConditionMet(args)) {
                     result.add(t);
                     break;
                 }

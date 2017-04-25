@@ -9,7 +9,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.oxo42.stateless4j.IgnoredTriggerBehaviourTests.toUntypedGuard;
 import static org.junit.Assert.*;
 
 public class StateRepresentationTests {
@@ -313,31 +312,31 @@ public class StateRepresentationTests {
     @Test
     public void WhenTransitionExists_TriggerCanBeFired() {
         StateRepresentation<State, Trigger> rep = CreateRepresentation(State.B);
-        assertFalse(rep.canHandle(Trigger.X, null));
+        assertFalse(rep.canHandle(Trigger.X));
     }
 
     @Test
     public void WhenTransitionExistsButGuardConditionNotMet_TriggerCanBeFired() {
         StateRepresentation<State, Trigger> rep = CreateRepresentation(State.B);
-        rep.addTriggerBehaviour(new IgnoredTriggerBehaviour<State, Trigger>(Trigger.X, toUntypedGuard(IgnoredTriggerBehaviourTests.returnFalse)));
-        assertFalse(rep.canHandle(Trigger.X, null));
+        rep.addTriggerBehaviour(new IgnoredTriggerBehaviour<State, Trigger>(Trigger.X, IgnoredTriggerBehaviourTests.RETURN_FALSE));
+        assertFalse(rep.canHandle(Trigger.X));
     }
 
     @Test
     public void WhenTransitionDoesNotExist_TriggerCannotBeFired() {
         StateRepresentation<State, Trigger> rep = CreateRepresentation(State.B);
-        rep.addTriggerBehaviour(new IgnoredTriggerBehaviour<State, Trigger>(Trigger.X, toUntypedGuard(IgnoredTriggerBehaviourTests.returnTrue)));
-        assertTrue(rep.canHandle(Trigger.X, null));
+        rep.addTriggerBehaviour(new IgnoredTriggerBehaviour<State, Trigger>(Trigger.X, IgnoredTriggerBehaviourTests.RETURN_TRUE));
+        assertTrue(rep.canHandle(Trigger.X));
     }
 
     @Test
     public void WhenTransitionExistsInSupersate_TriggerCanBeFired() {
         StateRepresentation<State, Trigger> rep = CreateRepresentation(State.B);
-        rep.addTriggerBehaviour(new IgnoredTriggerBehaviour<State, Trigger>(Trigger.X, toUntypedGuard(IgnoredTriggerBehaviourTests.returnTrue)));
+        rep.addTriggerBehaviour(new IgnoredTriggerBehaviour<State, Trigger>(Trigger.X, IgnoredTriggerBehaviourTests.RETURN_TRUE));
         StateRepresentation<State, Trigger> sub = CreateRepresentation(State.C);
         sub.setSuperstate(rep);
         rep.addSubstate(sub);
-        assertTrue(sub.canHandle(Trigger.X, null));
+        assertTrue(sub.canHandle(Trigger.X));
     }
 
     @Test
@@ -398,7 +397,7 @@ public class StateRepresentationTests {
         assertTrue(subOrder < superOrder);
     }
 
-    StateRepresentation<State, Trigger> CreateRepresentation(State state) {
+    private static StateRepresentation<State, Trigger> CreateRepresentation(State state) {
         return new StateRepresentation<>(state);
     }
 }

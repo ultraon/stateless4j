@@ -2,7 +2,6 @@ package com.github.oxo42.stateless4j;
 
 import com.github.oxo42.stateless4j.delegates.Action;
 import com.github.oxo42.stateless4j.delegates.FuncBoolean;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -121,7 +120,6 @@ public class StateMachineTests {
     }
 
     @Test
-    @Ignore
     public void AcceptedTriggersRespectGuards() {
         StateMachineConfig<State, Trigger> config = new StateMachineConfig<>();
 
@@ -144,8 +142,8 @@ public class StateMachineTests {
         StateMachineConfig<State, Trigger> config = new StateMachineConfig<>();
 
         config.configure(State.B)
-                .permitIf(Trigger.X, State.A, IgnoredTriggerBehaviourTests.returnFalse)
-                .permitIf(Trigger.X, State.C, IgnoredTriggerBehaviourTests.returnTrue);
+                .permitIf(Trigger.X, State.A, IgnoredTriggerBehaviourTests.RETURN_FALSE)
+                .permitIf(Trigger.X, State.C, IgnoredTriggerBehaviourTests.RETURN_TRUE);
 
         StateMachine<State, Trigger> sm = new StateMachine<>(State.B, config);
         sm.fire(Trigger.X);
